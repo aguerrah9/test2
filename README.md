@@ -30,9 +30,9 @@ This is an indigitall Android Technical Test.
 
 ## Your data
 
-**Name**:
+**Name**: Alejandro Guerra Hernandez
 
-**Email**: 
+**Email**: guerrah.alejandro@gmail.com
 
 **Firebase ServerKey**: 
 

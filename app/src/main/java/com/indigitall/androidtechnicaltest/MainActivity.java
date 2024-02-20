@@ -1,54 +1,96 @@
 package com.indigitall.androidtechnicaltest;
 
 import android.os.Bundle;
-import android.view.LayoutInflater;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
+import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.indigitall.androidtechnicaltest.models.Character;
+import com.indigitall.androidtechnicaltest.models.Characters;
 
 import java.util.ArrayList;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import org.json.JSONObject;
+
+import interfaces.PostService;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
 public class MainActivity extends AppCompatActivity {
 
-    ArrayList<Characters> data = new ArrayList<>();
-    GenericAdapter<Character> adapter;
+    ArrayList<Character> data = new ArrayList<>();
+    GenericAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ListView listView = (RelativeLayout) findViewById(R.id.listView);
+        ListView listView = (ListView) findViewById(R.id.listView);
 
-        adapter = new GenericAdapter<Character>(this, data) {
-            @Override
-            public View getDataRow(int position, View convertView, ViewGroup parent) {
-                View row = null;
-                final Character item = dataList.get(position);
+        data.add( new Character( "Rick"));
+        //getPosts();
 
-                // TODO: Fill row and add an OnClickListener
-                //  --> Inflate View with the item.xml layout
-                //  --> Fill View with the Character data
-                //  --> Set View.OnClickListener
-                //  --> Show and AlertDialog when click row. You can use `showDetail() function
+        adapter = new GenericAdapter(this, data);
 
-                return row;
-            }
-        };
-
-        listView.setAdapter(adapter)
+        listView.setAdapter(adapter);
         // Attach the listener to the AdapterView onCreate
         listView.setOnScrollListener(new EndlessScrollListener() {
             @Override
             public boolean onLoadMore(int page, int totalItemsCount) {
-                loadNextDataFromApi();
+                //loadNextDataFromApi();
+                getPosts();
                 return true;
+            }
+        });
+    }
+
+    private void getPosts() {
+        Log.v("getPosts","getPosts");
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://rickandmortyapi.com")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        PostService postService = retrofit.create(PostService.class);
+        Call<Characters> call = postService.getPost();
+
+        call.enqueue(new Callback<Characters>() {
+            @Override
+            public void onResponse(Call<Characters> call, Response<Characters> response) {
+                Log.v("onResponse", response.body().toString());
+                Toast.makeText(MainActivity.this,response.body().toString(),Toast.LENGTH_SHORT);
+                try {
+                    if (response.isSuccessful()){
+                        Log.v("isSuccessful", response.body().info.toString());
+                        Log.v("isSuccessful", response.body().results.toString());
+                        for(Character character : response.body().results) {
+                            Log.d("character", character.getName());
+                            //titles.add(character.getTitle());
+                            data.add(character);
+                        }
+
+                        Log.d("data", data.toString());
+                        //arrayAdapter.notifyDataSetChanged();
+                        adapter.notifyDataSetChanged();
+                    }
+                } catch (Exception ex) {
+                    Toast.makeText(MainActivity.this,ex.getMessage(),Toast.LENGTH_SHORT);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Characters> call, Throwable t) {
+                Log.e("getPosts",t.getMessage());
+                Toast.makeText(MainActivity.this,"Error de conexión",Toast.LENGTH_SHORT);
             }
         });
     }
@@ -74,3 +116,4 @@ public class MainActivity extends AppCompatActivity {
         AlertDialog alertDialog = dialogBuilder.create();
     }
 }
+

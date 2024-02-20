@@ -9,9 +9,12 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.indigitall.androidtechnicaltest.R;
+import com.indigitall.androidtechnicaltest.models.Character;
+import com.indigitall.androidtechnicaltest.models.Characters;
 
 import java.util.List;
 
@@ -24,10 +27,10 @@ import java.util.List;
  *  indicating that it has reached the last row.
  *
  */
-public abstract class GenericAdapter<T> extends BaseAdapter {
+public class GenericAdapter extends BaseAdapter {
 
     // the main data list to save loaded data
-    protected List<T> dataList;
+    protected List<Character> dataList;
 
     protected Activity mActivity;
 
@@ -41,7 +44,7 @@ public abstract class GenericAdapter<T> extends BaseAdapter {
     public static final int VIEW_TYPE_ACTIVITY = 1;
 
 
-    public GenericAdapter(Activity activity, List<T> list) {
+    public GenericAdapter(Activity activity, List<Character> list) {
         mActivity = activity;
         dataList = list;
     }
@@ -75,7 +78,7 @@ public abstract class GenericAdapter<T> extends BaseAdapter {
      */
     @Override
     public int getCount() {
-        return dataList.size() + 1;
+        return dataList.size();
     }
 
 
@@ -90,15 +93,13 @@ public abstract class GenericAdapter<T> extends BaseAdapter {
     }
 
     @Override
-    public T getItem(int position) {
-        return (getItemViewType(position) == VIEW_TYPE_ACTIVITY) ? dataList
-                .get(position) : null;
+    public Character getItem(int position) {
+        return dataList.get(position); //(getItemViewType(position) == VIEW_TYPE_ACTIVITY) ? dataList.get(position) : null;
     }
 
     @Override
     public long getItemId(int position) {
-        return (getItemViewType(position) == VIEW_TYPE_ACTIVITY) ? position
-                : -1;
+        return position; //(getItemViewType(position) == VIEW_TYPE_ACTIVITY) ? position: -1;
     }
 
     /**
@@ -106,30 +107,49 @@ public abstract class GenericAdapter<T> extends BaseAdapter {
      */
     @Override
     public View getView(int position, View convertView, ViewGroup parent){
-        if (getItemViewType(position) == VIEW_TYPE_LOADING) {
+
+        /*if (getItemViewType(position) == VIEW_TYPE_LOADING) {
             // display the last row
             return getFooterView(position, convertView, parent);
         }
         View dataRow = convertView;
-        dataRow = getDataRow(position, convertView, parent);
+        dataRow = getDataRow(position, convertView, parent);*/
 
-        return dataRow;
+        View view = mActivity.getLayoutInflater().inflate(R.layout.item, parent, false);
+        LinearLayout linearLayout = view.findViewById(R.id.item_LinearLayout);
+        TextView tvName = view.findViewById(R.id.item_name);
+
+        tvName.setText( dataList.get(position).getName());
+
+        return view;
     };
 
     /**
      * A subclass should override this method to supply the data row.
+     *
      * @param position
      * @param convertView
      * @param parent
      * @return
      */
-    public abstract View getDataRow(int position, View convertView, ViewGroup parent);
+    public View getDataRow(int position, View convertView, ViewGroup parent) {
+        View row = null;
+        final Character item = dataList.get(position);
+
+        // TODO: Fill row and add an OnClickListener
+        //  --> Inflate View with the item.xml layout
+        //  --> Fill View with the Character data
+        //  --> Set View.OnClickListener
+        //  --> Show and AlertDialog when click row. You can use `showDetail() function
+
+        return convertView;
+    }
 
     /**
      * returns the dataList
      * @return
      */
-    public List<T> getData() {
+    public List<Character> getData() {
         return dataList;
     }
 
@@ -140,8 +160,7 @@ public abstract class GenericAdapter<T> extends BaseAdapter {
      * @param parent
      * @return
      */
-    public View getFooterView(int position, View convertView,
-                              ViewGroup parent) {
+    public View getFooterView(int position, View convertView, ViewGroup parent) {
         if (position >= serverListSize && serverListSize > 0) {
             // the ListView has reached the last row
             TextView tvLastRow = new TextView(mActivity);
