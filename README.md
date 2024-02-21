@@ -34,6 +34,8 @@ This is an indigitall Android Technical Test.
 
 **Email**: guerrah.alejandro@gmail.com
 
-**Firebase ServerKey**: 
+**Firebase ServerKey**: eIGSKqyWS12Cy5IUp-pe6b:APA91bErmyhjCaePFm_2jv2y-Fu4-2BpuhTDfK-oNjTSLka5zFD4VuEYBWjFd3KcOTyRqJX7gQtPO2raiaRAH0sXMgSj-Gn25zUSMv6omemsq3a_H0ri6C_U0YFy-ZvRWNoI1CLVvpye
 
-**Comments**:
+**Comments**: I used RetroFit and Gson for consume and parse data from API.
+Use of Glide for showing pic from url
+Created 2 model classes for helping to handle data

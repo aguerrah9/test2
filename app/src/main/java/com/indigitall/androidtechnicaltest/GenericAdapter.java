@@ -27,7 +27,7 @@ import java.util.List;
  *  indicating that it has reached the last row.
  *
  */
-public class GenericAdapter extends BaseAdapter {
+public abstract class GenericAdapter extends BaseAdapter {
 
     // the main data list to save loaded data
     protected List<Character> dataList;
@@ -78,7 +78,7 @@ public class GenericAdapter extends BaseAdapter {
      */
     @Override
     public int getCount() {
-        return dataList.size();
+        return dataList.size()+1;
     }
 
 
@@ -94,12 +94,14 @@ public class GenericAdapter extends BaseAdapter {
 
     @Override
     public Character getItem(int position) {
-        return dataList.get(position); //(getItemViewType(position) == VIEW_TYPE_ACTIVITY) ? dataList.get(position) : null;
+        //return dataList.get(position);
+        return (getItemViewType(position) == VIEW_TYPE_ACTIVITY) ? dataList.get(position) : null;
     }
 
     @Override
     public long getItemId(int position) {
-        return position; //(getItemViewType(position) == VIEW_TYPE_ACTIVITY) ? position: -1;
+        //return position;
+        return (getItemViewType(position) == VIEW_TYPE_ACTIVITY) ? position: -1;
     }
 
     /**
@@ -108,20 +110,14 @@ public class GenericAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent){
 
-        /*if (getItemViewType(position) == VIEW_TYPE_LOADING) {
+        if (getItemViewType(position) == VIEW_TYPE_LOADING) {
             // display the last row
             return getFooterView(position, convertView, parent);
         }
         View dataRow = convertView;
-        dataRow = getDataRow(position, convertView, parent);*/
+        dataRow = getDataRow(position, convertView, parent);
 
-        View view = mActivity.getLayoutInflater().inflate(R.layout.item, parent, false);
-        LinearLayout linearLayout = view.findViewById(R.id.item_LinearLayout);
-        TextView tvName = view.findViewById(R.id.item_name);
-
-        tvName.setText( dataList.get(position).getName());
-
-        return view;
+        return dataRow;
     };
 
     /**
@@ -132,18 +128,7 @@ public class GenericAdapter extends BaseAdapter {
      * @param parent
      * @return
      */
-    public View getDataRow(int position, View convertView, ViewGroup parent) {
-        View row = null;
-        final Character item = dataList.get(position);
-
-        // TODO: Fill row and add an OnClickListener
-        //  --> Inflate View with the item.xml layout
-        //  --> Fill View with the Character data
-        //  --> Set View.OnClickListener
-        //  --> Show and AlertDialog when click row. You can use `showDetail() function
-
-        return convertView;
-    }
+    public abstract View getDataRow(int position, View convertView, ViewGroup parent);
 
     /**
      * returns the dataList

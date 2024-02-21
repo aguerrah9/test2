@@ -4,6 +4,7 @@ import java.lang.reflect.Array;
 import java.util.List;
 
 public class Characters {
-    public Object info;
+    public Info info;
     public List<Character> results;
 }
+

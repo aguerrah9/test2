@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "566806743258",
+    "project_id": "techtest-31d16",
+    "storage_bucket": "techtest-31d16.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:566806743258:android:7a1cf1fd4cc2d5d4bffde3",
+        "android_client_info": {
+          "package_name": "com.indigitall.androidtechnicaltest"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD-XSO-E-e3UKB9FHf3hLKhAFYVSBhc7Zc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
