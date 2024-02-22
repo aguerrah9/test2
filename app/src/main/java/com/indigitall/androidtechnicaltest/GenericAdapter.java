@@ -9,12 +9,9 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.indigitall.androidtechnicaltest.R;
-import com.indigitall.androidtechnicaltest.models.Character;
-import com.indigitall.androidtechnicaltest.models.Characters;
 
 import java.util.List;
 
@@ -27,10 +24,10 @@ import java.util.List;
  *  indicating that it has reached the last row.
  *
  */
-public abstract class GenericAdapter extends BaseAdapter {
+public abstract class GenericAdapter<T> extends BaseAdapter {
 
     // the main data list to save loaded data
-    protected List<Character> dataList;
+    protected List<T> dataList;
 
     protected Activity mActivity;
 
@@ -44,7 +41,7 @@ public abstract class GenericAdapter extends BaseAdapter {
     public static final int VIEW_TYPE_ACTIVITY = 1;
 
 
-    public GenericAdapter(Activity activity, List<Character> list) {
+    public GenericAdapter(Activity activity, List<T> list) {
         mActivity = activity;
         dataList = list;
     }
@@ -78,7 +75,7 @@ public abstract class GenericAdapter extends BaseAdapter {
      */
     @Override
     public int getCount() {
-        return dataList.size()+1;
+        return dataList.size() + 1;
     }
 
 
@@ -93,15 +90,15 @@ public abstract class GenericAdapter extends BaseAdapter {
     }
 
     @Override
-    public Character getItem(int position) {
-        //return dataList.get(position);
-        return (getItemViewType(position) == VIEW_TYPE_ACTIVITY) ? dataList.get(position) : null;
+    public T getItem(int position) {
+        return (getItemViewType(position) == VIEW_TYPE_ACTIVITY) ? dataList
+                .get(position) : null;
     }
 
     @Override
     public long getItemId(int position) {
-        //return position;
-        return (getItemViewType(position) == VIEW_TYPE_ACTIVITY) ? position: -1;
+        return (getItemViewType(position) == VIEW_TYPE_ACTIVITY) ? position
+                : -1;
     }
 
     /**
@@ -109,7 +106,6 @@ public abstract class GenericAdapter extends BaseAdapter {
      */
     @Override
     public View getView(int position, View convertView, ViewGroup parent){
-
         if (getItemViewType(position) == VIEW_TYPE_LOADING) {
             // display the last row
             return getFooterView(position, convertView, parent);
@@ -122,7 +118,6 @@ public abstract class GenericAdapter extends BaseAdapter {
 
     /**
      * A subclass should override this method to supply the data row.
-     *
      * @param position
      * @param convertView
      * @param parent
@@ -134,7 +129,7 @@ public abstract class GenericAdapter extends BaseAdapter {
      * returns the dataList
      * @return
      */
-    public List<Character> getData() {
+    public List<T> getData() {
         return dataList;
     }
 
@@ -145,7 +140,8 @@ public abstract class GenericAdapter extends BaseAdapter {
      * @param parent
      * @return
      */
-    public View getFooterView(int position, View convertView, ViewGroup parent) {
+    public View getFooterView(int position, View convertView,
+                              ViewGroup parent) {
         if (position >= serverListSize && serverListSize > 0) {
             // the ListView has reached the last row
             TextView tvLastRow = new TextView(mActivity);

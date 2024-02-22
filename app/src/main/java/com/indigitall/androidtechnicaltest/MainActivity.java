@@ -3,6 +3,9 @@ package com.indigitall.androidtechnicaltest;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -36,9 +39,10 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class MainActivity extends AppCompatActivity {
 
     ArrayList<Character> data = new ArrayList<>();
-    GenericAdapter adapter;
+    GenericAdapter<Character> adapter;
 
     Integer page = 1;
+    String token = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
 
         ListView listView = findViewById(R.id.listView);
 
-        adapter = new GenericAdapter(this, data) {
+        adapter = new GenericAdapter<Character>(this, data) {
             @Override
             public View getDataRow(int position, View convertView, ViewGroup parent) {
                 View row = null;
@@ -104,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
                         }
 
                         // Get new FCM registration token
-                        String token = task.getResult();
+                        token = task.getResult();
 
                         // Log and toast
                         //String msg = getString(R.string.msg_token_fmt, token);
@@ -144,14 +148,12 @@ public class MainActivity extends AppCompatActivity {
 
                         for(Character character : response.body().results) {
                             //Log.d("character", character.getName());
-                            //titles.add(character.getTitle());
                             data.add(character);
                         }
 
                         Toast.makeText(MainActivity.this,"Showing page "+page,Toast.LENGTH_SHORT).show();
                         //Log.d("data", data.toString());
                         page = page + 1;
-                        //arrayAdapter.notifyDataSetChanged();
                         adapter.notifyDataSetChanged();
                     }
                 } catch (Exception ex) {
@@ -184,6 +186,7 @@ public class MainActivity extends AppCompatActivity {
 
         ImageView detailImage = itemDetail.findViewById(R.id.image);
         String imageUrl = item.getImage();
+
         // Use Glide to load the image from the URL
         Glide.with(this)
                 .load(imageUrl)
@@ -198,7 +201,7 @@ public class MainActivity extends AppCompatActivity {
         detailType.setText( item.getType());
         detailGender.setText( item.getGender());
 
-        dialogBuilder.setNeutralButton("OK", (dialog, which) -> {
+        dialogBuilder.setPositiveButton("OK", (dialog, which) -> {
             // send data from the AlertDialog to the Activity
         });
 
@@ -206,5 +209,23 @@ public class MainActivity extends AppCompatActivity {
         alertDialog.show();
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.test_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(MainActivity.this);
+        dialogBuilder.setTitle("Token FCM");
+        dialogBuilder.setMessage(token);
+        AlertDialog alertDialog = dialogBuilder.create();
+        alertDialog.show();
+
+        return super.onOptionsItemSelected(item);
+    }
 }
 
